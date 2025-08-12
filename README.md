@@ -1,184 +1,704 @@
-![Gatsby E-commerce theme designed by Matter](https://user-images.githubusercontent.com/43764894/223762927-2e463570-b09a-4d51-ab81-2e0fa8aa2c70.png)
 
-This beautiful theme from the [Matter Design Team](https://matterdesign.com.au/) gives you the styling and scaffolding for your next e-commerce site. You can customize to your heart's content and add the tooling for cart, transactions, product, and more. This theme uses:
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bestellen - EduSwitch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {margin:0;font-family:'Inter',sans-serif;background:#f8fcff;color:#081125}
+    header {position:sticky;top:0;background:linear-gradient(90deg,#0011aa,#00c2b3);color:#fff;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
+    header a {color:#fff;margin-left:16px;text-decoration:none;font-weight:600}
+    header .brand {font-family:'Sora',sans-serif;font-weight:800;font-size:22px}
+    .content {max-width:900px;margin:40px auto;padding:0 20px}
+    .btn {display:inline-block;background:linear-gradient(135deg,#0011aa,#00c2b3);color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:700}
+    .trust-badges {display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+    .trust-badge {background:#fff;padding:6px 12px;border-radius:8px;font-size:0.85rem;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+    footer {text-align:center;padding:20px;background:#f1f5f9;margin-top:40px}
+    /* Modal styling */
+    .modal-overlay {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000}
+    .modal {background:#fff;padding:20px;border-radius:12px;max-width:400px;width:90%;text-align:center;transform:scale(0.8);opacity:0;transition:all 0.3s ease-in-out}
+    .modal.show {transform:scale(1);opacity:1}
+    .close-btn {position:absolute;top:15px;right:15px;background:linear-gradient(135deg,#0011aa,#00c2b3);border:none;color:#fff;font-size:18px;border-radius:50%;width:28px;height:28px;cursor:pointer}
+  </style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="brand">EduSwitch</a>
+  <nav>
+    <a href="boek.html">Boek</a>
+    <a href="ebook.html">E-book</a>
+    <a href="diensten.html">Diensten</a>
+    <a href="hulpvraag.html">Hulpvraag</a>
+    <a href="over.html">Over</a>
+    <a href="contact.html">Contact</a>
+    <a href="bestellen.html">Bestellen</a>
+  </nav>
+</header>
 
-- [Gatsby](https://www.gatsbyjs.com/)
-- [CSS Modules](https://github.com/css-modules/css-modules)
-- [Prettier](https://prettier.io/)
-- [React Helmet](https://github.com/nfl/react-helmet)
+<div class="content">
+<h1>Bestel</h1><p>Bestelformulier komt hier.</p>
+</div>
 
-Take a look at the screenshot below or preview the live site here: https://gatsby-ecommerce-theme.netlify.app/!
-![full page screenshot](https://res.cloudinary.com/dzkoxrsdj/image/upload/v1653371030/CleanShot_2022-05-24_at_01.11.52_2x_bspa8c.jpg)
+<div class="content">
+  <h3>Wat anderen zeggen</h3>
+  <div class="review-slider">
+    <p>“Het boek heeft ons team enorm geholpen bij een vliegende start.” — Jan de Vries, directeur</p>
+    <p>“Praktische tips die meteen toepasbaar zijn.” — Petra Jansen, docent</p>
+    <p>“Geeft echt structuur aan het schooljaar.” — Ahmed El Amrani, directeur</p>
+    <p>“Duidelijke handvatten voor het hele team.” — Lisa van Dijk, docent</p>
+  </div>
+</div>
 
-> 🧐 Please be aware that some aspects of this theme are not fully functional and will need to be integrated with the recommended tooling mentioned at the end of the [README](#next-steps-with-this-theme). 
+<footer>
+  <p>&copy; 2025 EduSwitch. Alle rechten voorbehouden.</p>
+</footer>
 
-## Table of Contents:
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modal-box">
+    <button class="close-btn" id="close-modal">&times;</button>
+    <p id="modal-message"></p>
+  </div>
+</div>
 
-- [Quick Steps + Deploy Options](#quick-setup--deploy-option)
-  - [Cloning + Installing Packages](#cloning--installing-packages)
-- [Deploying](#deploying)
-- [Project Structure](#project-structure)
-  - [Making Changes to the Hero Component](#making-changes-to-the-hero-component)
-  - [Making Changes to the Header or Footer](#making-content-changes-to-the-header-or-footer)
-- [Testing](#testing)
-  - [Included Default Testing](#included-default-testing)
-  - [Removing Renovate](#removing-renovate)
-- [Next Steps with This Theme](#next-steps-with-this-theme)
+<script>
+  const modalOverlay = document.getElementById('modal');
+  const modalBox = document.getElementById('modal-box');
+  const modalMessage = document.getElementById('modal-message');
+  const closeModal = document.getElementById('close-modal');
+  closeModal.addEventListener('click', ()=> modalOverlay.style.display='none');
+  modalOverlay.addEventListener('click', e => { if(e.target===modalOverlay) modalOverlay.style.display='none'; });
 
-## Quick Setup + Deploy Option
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formType = this.getAttribute('data-form-type');
+      let message = "Bedankt voor uw bericht.";
+      if(formType==="hulpvraag") message = "Bedankt voor het insturen van uw hulpvraag. We gaan ermee aan de slag.";
+      if(formType==="bestelling") message = "Bedankt voor uw bestelling. U ontvangt spoedig een bevestiging in uw e-mail.";
+      modalMessage.textContent = message;
+      modalOverlay.style.display = 'flex';
+      setTimeout(()=> modalBox.classList.add('show'), 10);
+    });
+  });
+</script>
 
-Click the button below and it will help you create a new repo, create a new Netlify project, and deploy this Theme!
+</body>
+</html>
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/gatsby-ecommerce-theme&utm_source=github&utm_medium=matter-design-theme-repo&utm_campaign=template-team)
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Boek - EduSwitch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {margin:0;font-family:'Inter',sans-serif;background:#f8fcff;color:#081125}
+    header {position:sticky;top:0;background:linear-gradient(90deg,#0011aa,#00c2b3);color:#fff;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
+    header a {color:#fff;margin-left:16px;text-decoration:none;font-weight:600}
+    header .brand {font-family:'Sora',sans-serif;font-weight:800;font-size:22px}
+    .content {max-width:900px;margin:40px auto;padding:0 20px}
+    .btn {display:inline-block;background:linear-gradient(135deg,#0011aa,#00c2b3);color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:700}
+    .trust-badges {display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+    .trust-badge {background:#fff;padding:6px 12px;border-radius:8px;font-size:0.85rem;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+    footer {text-align:center;padding:20px;background:#f1f5f9;margin-top:40px}
+    /* Modal styling */
+    .modal-overlay {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000}
+    .modal {background:#fff;padding:20px;border-radius:12px;max-width:400px;width:90%;text-align:center;transform:scale(0.8);opacity:0;transition:all 0.3s ease-in-out}
+    .modal.show {transform:scale(1);opacity:1}
+    .close-btn {position:absolute;top:15px;right:15px;background:linear-gradient(135deg,#0011aa,#00c2b3);border:none;color:#fff;font-size:18px;border-radius:50%;width:28px;height:28px;cursor:pointer}
+  </style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="brand">EduSwitch</a>
+  <nav>
+    <a href="boek.html">Boek</a>
+    <a href="ebook.html">E-book</a>
+    <a href="diensten.html">Diensten</a>
+    <a href="hulpvraag.html">Hulpvraag</a>
+    <a href="over.html">Over</a>
+    <a href="contact.html">Contact</a>
+    <a href="bestellen.html">Bestellen</a>
+  </nav>
+</header>
 
-## Regular Setup
+<div class="content">
+<h1>Goed begin, sterk jaar</h1><p>Ons fysieke boek vol praktische tips voor het onderwijs.</p><div class='trust-badges'><div class='trust-badge'>AVG-proof</div><div class='trust-badge'>4,8/5 tevredenheid</div><div class='trust-badge'>Veilige betaling</div></div>
+</div>
 
- ### Cloning + Installing Packages
- 
-  - Clone this repo with one of these options:
+<div class="content">
+  <h3>Wat anderen zeggen</h3>
+  <div class="review-slider">
+    <p>“Het boek heeft ons team enorm geholpen bij een vliegende start.” — Jan de Vries, directeur</p>
+    <p>“Praktische tips die meteen toepasbaar zijn.” — Petra Jansen, docent</p>
+    <p>“Geeft echt structuur aan het schooljaar.” — Ahmed El Amrani, directeur</p>
+    <p>“Duidelijke handvatten voor het hele team.” — Lisa van Dijk, docent</p>
+  </div>
+</div>
 
-    - Click the 'Use this template' button at the top of the page
-    - Via the command line:
-       ```shell
-       git clone https://github.com/netlify-templates/gatsby-ecommerce-theme/
-       ```
-    - Or you can clone the theme straight from the Netlify CLI, using the `netlify sites:create-template` command in your terminal ([learn more about this command here](https://www.netlify.com/blog/create-a-site-from-a-template-using-the-netlify-cli)) to do the entire flow for you.
+<footer>
+  <p>&copy; 2025 EduSwitch. Alle rechten voorbehouden.</p>
+</footer>
 
-  From there, you can install the project's dependencies by running:
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modal-box">
+    <button class="close-btn" id="close-modal">&times;</button>
+    <p id="modal-message"></p>
+  </div>
+</div>
 
-  ```shell
-  npm install or yarn install
-  ```
+<script>
+  const modalOverlay = document.getElementById('modal');
+  const modalBox = document.getElementById('modal-box');
+  const modalMessage = document.getElementById('modal-message');
+  const closeModal = document.getElementById('close-modal');
+  closeModal.addEventListener('click', ()=> modalOverlay.style.display='none');
+  modalOverlay.addEventListener('click', e => { if(e.target===modalOverlay) modalOverlay.style.display='none'; });
 
-  Finally, you can run your project locally with:
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formType = this.getAttribute('data-form-type');
+      let message = "Bedankt voor uw bericht.";
+      if(formType==="hulpvraag") message = "Bedankt voor het insturen van uw hulpvraag. We gaan ermee aan de slag.";
+      if(formType==="bestelling") message = "Bedankt voor uw bestelling. U ontvangt spoedig een bevestiging in uw e-mail.";
+      modalMessage.textContent = message;
+      modalOverlay.style.display = 'flex';
+      setTimeout(()=> modalBox.classList.add('show'), 10);
+    });
+  });
+</script>
 
-  ```shell
-  cd gatsby-sydney-ecommerce-theme/
-  npm start or yarn start
-  ```
-  
-  or, run it using the Netlify CLI with:
-  
-  ```shell
-  netlify run dev
-  ```
-  
-  Open your browser and visit <http://localhost:5000>, your project should now be running!
-  
-  ## Deploying
- 
-  After installing and customizing your new e-commerce theme it's now time to deploy! 
-  
-   -  You can Deploy using the [Netlify CLI](https://cli.netlify.com/):
+</body>
+</html>
 
-      ```bash
-      netlify init # initialize a new Netlify project & deploy
-      ```
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact - EduSwitch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {margin:0;font-family:'Inter',sans-serif;background:#f8fcff;color:#081125}
+    header {position:sticky;top:0;background:linear-gradient(90deg,#0011aa,#00c2b3);color:#fff;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
+    header a {color:#fff;margin-left:16px;text-decoration:none;font-weight:600}
+    header .brand {font-family:'Sora',sans-serif;font-weight:800;font-size:22px}
+    .content {max-width:900px;margin:40px auto;padding:0 20px}
+    .btn {display:inline-block;background:linear-gradient(135deg,#0011aa,#00c2b3);color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:700}
+    .trust-badges {display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+    .trust-badge {background:#fff;padding:6px 12px;border-radius:8px;font-size:0.85rem;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+    footer {text-align:center;padding:20px;background:#f1f5f9;margin-top:40px}
+    /* Modal styling */
+    .modal-overlay {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000}
+    .modal {background:#fff;padding:20px;border-radius:12px;max-width:400px;width:90%;text-align:center;transform:scale(0.8);opacity:0;transition:all 0.3s ease-in-out}
+    .modal.show {transform:scale(1);opacity:1}
+    .close-btn {position:absolute;top:15px;right:15px;background:linear-gradient(135deg,#0011aa,#00c2b3);border:none;color:#fff;font-size:18px;border-radius:50%;width:28px;height:28px;cursor:pointer}
+  </style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="brand">EduSwitch</a>
+  <nav>
+    <a href="boek.html">Boek</a>
+    <a href="ebook.html">E-book</a>
+    <a href="diensten.html">Diensten</a>
+    <a href="hulpvraag.html">Hulpvraag</a>
+    <a href="over.html">Over</a>
+    <a href="contact.html">Contact</a>
+    <a href="bestellen.html">Bestellen</a>
+  </nav>
+</header>
 
-   It will use the information from the included Netlify configuration file, [`netlify.toml`](./netlify.toml), to set up the build command as `gatsby build` to create a static project and locate the build project in the `public` directory.
+<div class="content">
+<h1>Contact</h1><form action='https://formspree.io/f/xrbljyzg' method='POST' data-form-type='contact'><input type='text' name='name' placeholder='Naam' required><input type='email' name='email' placeholder='E-mail' required><textarea name='message' placeholder='Uw bericht' required></textarea><button type='submit' class='btn'>Verstuur</button></form>
+</div>
 
-   The `init` process will also set up continuous deployment for your project so that a new build will be triggered & deployed when you push code to the repo (you can change this from your project dashboard: Site Settings/Build & deploy/Continuous Deployment).
+<div class="content">
+  <h3>Wat anderen zeggen</h3>
+  <div class="review-slider">
+    <p>“Het boek heeft ons team enorm geholpen bij een vliegende start.” — Jan de Vries, directeur</p>
+    <p>“Praktische tips die meteen toepasbaar zijn.” — Petra Jansen, docent</p>
+    <p>“Geeft echt structuur aan het schooljaar.” — Ahmed El Amrani, directeur</p>
+    <p>“Duidelijke handvatten voor het hele team.” — Lisa van Dijk, docent</p>
+  </div>
+</div>
 
-   You can also use `netlify deploy (--prod)` to manually deploy and `netlify open` to open your project dashboard.
+<footer>
+  <p>&copy; 2025 EduSwitch. Alle rechten voorbehouden.</p>
+</footer>
 
-  > 💡 we only have so many keystrokes to give, use `ntl` shorthand for `netlify` or make [an alias of your own](https://www.netlify.com/blog/2020/04/12/speed-up-productivity-with-terminal-aliases/) to save hours...of accumulated milliseconds
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modal-box">
+    <button class="close-btn" id="close-modal">&times;</button>
+    <p id="modal-message"></p>
+  </div>
+</div>
 
-  - You can deploy within the Netlify site by connecting to git, this [video](https://www.youtube.com/watch?v=4h8B080Mv4U&t=107s) will walk you through that process. 
-  - Or, you can use the Deploy to Netlify button which will walk you through the process of spinning up a repo, creating a new project in Netlify, AND deploying it :)
+<script>
+  const modalOverlay = document.getElementById('modal');
+  const modalBox = document.getElementById('modal-box');
+  const modalMessage = document.getElementById('modal-message');
+  const closeModal = document.getElementById('close-modal');
+  closeModal.addEventListener('click', ()=> modalOverlay.style.display='none');
+  modalOverlay.addEventListener('click', e => { if(e.target===modalOverlay) modalOverlay.style.display='none'; });
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/gatsby-ecommerce-theme&utm_source=github&utm_medium=matter-design-theme-repo&utm_campaign=template-team)
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formType = this.getAttribute('data-form-type');
+      let message = "Bedankt voor uw bericht.";
+      if(formType==="hulpvraag") message = "Bedankt voor het insturen van uw hulpvraag. We gaan ermee aan de slag.";
+      if(formType==="bestelling") message = "Bedankt voor uw bestelling. U ontvangt spoedig een bevestiging in uw e-mail.";
+      modalMessage.textContent = message;
+      modalOverlay.style.display = 'flex';
+      setTimeout(()=> modalBox.classList.add('show'), 10);
+    });
+  });
+</script>
 
-## Project Structure
+</body>
+</html>
 
-Here is a bit of an overview of the directory structure of the project:
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Diensten - EduSwitch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {margin:0;font-family:'Inter',sans-serif;background:#f8fcff;color:#081125}
+    header {position:sticky;top:0;background:linear-gradient(90deg,#0011aa,#00c2b3);color:#fff;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
+    header a {color:#fff;margin-left:16px;text-decoration:none;font-weight:600}
+    header .brand {font-family:'Sora',sans-serif;font-weight:800;font-size:22px}
+    .content {max-width:900px;margin:40px auto;padding:0 20px}
+    .btn {display:inline-block;background:linear-gradient(135deg,#0011aa,#00c2b3);color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:700}
+    .trust-badges {display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+    .trust-badge {background:#fff;padding:6px 12px;border-radius:8px;font-size:0.85rem;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+    footer {text-align:center;padding:20px;background:#f1f5f9;margin-top:40px}
+    /* Modal styling */
+    .modal-overlay {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000}
+    .modal {background:#fff;padding:20px;border-radius:12px;max-width:400px;width:90%;text-align:center;transform:scale(0.8);opacity:0;transition:all 0.3s ease-in-out}
+    .modal.show {transform:scale(1);opacity:1}
+    .close-btn {position:absolute;top:15px;right:15px;background:linear-gradient(135deg,#0011aa,#00c2b3);border:none;color:#fff;font-size:18px;border-radius:50%;width:28px;height:28px;cursor:pointer}
+  </style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="brand">EduSwitch</a>
+  <nav>
+    <a href="boek.html">Boek</a>
+    <a href="ebook.html">E-book</a>
+    <a href="diensten.html">Diensten</a>
+    <a href="hulpvraag.html">Hulpvraag</a>
+    <a href="over.html">Over</a>
+    <a href="contact.html">Contact</a>
+    <a href="bestellen.html">Bestellen</a>
+  </nav>
+</header>
 
-| Directory | Description |
-| :---- | :---- |
-| `src/components/` | Stores reusable elements across the site. (e.g. BlogPreview element) |
-| `src/pages/` | Stores routes for a user to go to based on each `.js` file and nested folder (e.g. `src/pages/about.js` creates a route `/about` in the web app) |
-| `src/helpers` | Stores mock data for the blog or product list and general utility functions. |
+<div class="content">
+<h1>Onze Diensten</h1><p>Signaleren en aanpakken van inhoudelijke en organisatorische hiaten. Ontwikkelen en verkopen van praktische handboeken en hulpmiddelen. Ondersteuning en advies op maat voor scholen en organisaties.</p>
+</div>
 
-### Making changes to the Hero component
+<div class="content">
+  <h3>Wat anderen zeggen</h3>
+  <div class="review-slider">
+    <p>“Het boek heeft ons team enorm geholpen bij een vliegende start.” — Jan de Vries, directeur</p>
+    <p>“Praktische tips die meteen toepasbaar zijn.” — Petra Jansen, docent</p>
+    <p>“Geeft echt structuur aan het schooljaar.” — Ahmed El Amrani, directeur</p>
+    <p>“Duidelijke handvatten voor het hele team.” — Lisa van Dijk, docent</p>
+  </div>
+</div>
 
-On the homepage of the website and a few other places, there is a full-width image component. We refer to this as the `<Hero/>` component. Here is a bit of an overview of what its API looks like:
+<footer>
+  <p>&copy; 2025 EduSwitch. Alle rechten voorbehouden.</p>
+</footer>
 
-```jsx
-<Hero
-  maxWidth='500px' // how big the image's maxumim should be
-  image={'/banner1.png'} // the source location for the image
-  title={'Essentials for a cold winter'} // the main text displayed
-  subtitle={'Discover Autumn Winter 2021'} // text found below the main text
-  ctaText={'shop now'} // the presented text for a user to click on
-  ctaAction={goToShop} // the location the call-to-action text directs users
-/>
-```
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modal-box">
+    <button class="close-btn" id="close-modal">&times;</button>
+    <p id="modal-message"></p>
+  </div>
+</div>
 
-You can see it in action under [`src/pages/index.js`](./src/pages/index.js) or see the component in [`src/components/Hero/Hero.js`](./src/components/Hero/Hero.js).
+<script>
+  const modalOverlay = document.getElementById('modal');
+  const modalBox = document.getElementById('modal-box');
+  const modalMessage = document.getElementById('modal-message');
+  const closeModal = document.getElementById('close-modal');
+  closeModal.addEventListener('click', ()=> modalOverlay.style.display='none');
+  modalOverlay.addEventListener('click', e => { if(e.target===modalOverlay) modalOverlay.style.display='none'; });
 
-### Making content changes to the Header or Footer
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formType = this.getAttribute('data-form-type');
+      let message = "Bedankt voor uw bericht.";
+      if(formType==="hulpvraag") message = "Bedankt voor het insturen van uw hulpvraag. We gaan ermee aan de slag.";
+      if(formType==="bestelling") message = "Bedankt voor uw bestelling. U ontvangt spoedig een bevestiging in uw e-mail.";
+      modalMessage.textContent = message;
+      modalOverlay.style.display = 'flex';
+      setTimeout(()=> modalBox.classList.add('show'), 10);
+    });
+  });
+</script>
 
-The project contains a file named `src/config.json`. Inside of this file describes the content of the header links (`headerLinks`) as well as the footer links (`footerLinks`). For the header, each element in the array has a base structure of:
+</body>
+</html>
 
-```json
-{
-  "menuLabel": "The label that is given to a user",
-  "menuLink": "The URL that this should take a user to"
-}
-```
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>E-book - EduSwitch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {margin:0;font-family:'Inter',sans-serif;background:#f8fcff;color:#081125}
+    header {position:sticky;top:0;background:linear-gradient(90deg,#0011aa,#00c2b3);color:#fff;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
+    header a {color:#fff;margin-left:16px;text-decoration:none;font-weight:600}
+    header .brand {font-family:'Sora',sans-serif;font-weight:800;font-size:22px}
+    .content {max-width:900px;margin:40px auto;padding:0 20px}
+    .btn {display:inline-block;background:linear-gradient(135deg,#0011aa,#00c2b3);color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:700}
+    .trust-badges {display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+    .trust-badge {background:#fff;padding:6px 12px;border-radius:8px;font-size:0.85rem;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+    footer {text-align:center;padding:20px;background:#f1f5f9;margin-top:40px}
+    /* Modal styling */
+    .modal-overlay {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000}
+    .modal {background:#fff;padding:20px;border-radius:12px;max-width:400px;width:90%;text-align:center;transform:scale(0.8);opacity:0;transition:all 0.3s ease-in-out}
+    .modal.show {transform:scale(1);opacity:1}
+    .close-btn {position:absolute;top:15px;right:15px;background:linear-gradient(135deg,#0011aa,#00c2b3);border:none;color:#fff;font-size:18px;border-radius:50%;width:28px;height:28px;cursor:pointer}
+  </style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="brand">EduSwitch</a>
+  <nav>
+    <a href="boek.html">Boek</a>
+    <a href="ebook.html">E-book</a>
+    <a href="diensten.html">Diensten</a>
+    <a href="hulpvraag.html">Hulpvraag</a>
+    <a href="over.html">Over</a>
+    <a href="contact.html">Contact</a>
+    <a href="bestellen.html">Bestellen</a>
+  </nav>
+</header>
 
-If you want the menu item to have a dropdown, you can also add a `category` key with the value being an array of the categories and their containing elements, here's what the base could look like:
+<div class="content">
+<h1>E-book — Goed begin, sterk jaar</h1><p>Digitale versie, beveiligd tegen kopiëren en delen, direct beschikbaar na aankoop.</p><div class='trust-badges'><div class='trust-badge'>AVG-proof</div><div class='trust-badge'>4,8/5 tevredenheid</div><div class='trust-badge'>Veilige betaling</div></div>
+</div>
 
-```json
-{
-  "menuLabel": "The label that is given to a user",
-  "menuLink": "The URL that this should take a user to",
-  "category": [
-    {
-      "categoryLabel": "Label you want the category to have",
-      "submenu": [
-        {
-          "menuLabel": "A label underneath the category",
-          "menuLink": "The associated link to this label"
-        }
-      ]
-    }
-  ]
-}
-```
+<div class="content">
+  <h3>Wat anderen zeggen</h3>
+  <div class="review-slider">
+    <p>“Het boek heeft ons team enorm geholpen bij een vliegende start.” — Jan de Vries, directeur</p>
+    <p>“Praktische tips die meteen toepasbaar zijn.” — Petra Jansen, docent</p>
+    <p>“Geeft echt structuur aan het schooljaar.” — Ahmed El Amrani, directeur</p>
+    <p>“Duidelijke handvatten voor het hele team.” — Lisa van Dijk, docent</p>
+  </div>
+</div>
 
-The footer works in a similar way. It assumes each element in the array has a heading and an array of associated links to direct folks to:
+<footer>
+  <p>&copy; 2025 EduSwitch. Alle rechten voorbehouden.</p>
+</footer>
 
-```json
-"footerLinks": [
-    {
-      "subTitle": "Label of the column in the footer",
-      "links": [
-        {
-          "text": "Text to display to the user",
-          "link": "URL of where to take the user to when clicked"
-        },
-      ]
-    }
-]
-```
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modal-box">
+    <button class="close-btn" id="close-modal">&times;</button>
+    <p id="modal-message"></p>
+  </div>
+</div>
 
-## Testing
+<script>
+  const modalOverlay = document.getElementById('modal');
+  const modalBox = document.getElementById('modal-box');
+  const modalMessage = document.getElementById('modal-message');
+  const closeModal = document.getElementById('close-modal');
+  closeModal.addEventListener('click', ()=> modalOverlay.style.display='none');
+  modalOverlay.addEventListener('click', e => { if(e.target===modalOverlay) modalOverlay.style.display='none'; });
 
-### Included Default Testing
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formType = this.getAttribute('data-form-type');
+      let message = "Bedankt voor uw bericht.";
+      if(formType==="hulpvraag") message = "Bedankt voor het insturen van uw hulpvraag. We gaan ermee aan de slag.";
+      if(formType==="bestelling") message = "Bedankt voor uw bestelling. U ontvangt spoedig een bevestiging in uw e-mail.";
+      modalMessage.textContent = message;
+      modalOverlay.style.display = 'flex';
+      setTimeout(()=> modalBox.classList.add('show'), 10);
+    });
+  });
+</script>
 
-We’ve included some tooling that helps us maintain these templates. This template currently uses:
+</body>
+</html>
 
-- [Renovate](https://www.mend.io/free-developer-tools/renovate/) - to regularly update our dependencies
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hulpvraag - EduSwitch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {margin:0;font-family:'Inter',sans-serif;background:#f8fcff;color:#081125}
+    header {position:sticky;top:0;background:linear-gradient(90deg,#0011aa,#00c2b3);color:#fff;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
+    header a {color:#fff;margin-left:16px;text-decoration:none;font-weight:600}
+    header .brand {font-family:'Sora',sans-serif;font-weight:800;font-size:22px}
+    .content {max-width:900px;margin:40px auto;padding:0 20px}
+    .btn {display:inline-block;background:linear-gradient(135deg,#0011aa,#00c2b3);color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:700}
+    .trust-badges {display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+    .trust-badge {background:#fff;padding:6px 12px;border-radius:8px;font-size:0.85rem;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+    footer {text-align:center;padding:20px;background:#f1f5f9;margin-top:40px}
+    /* Modal styling */
+    .modal-overlay {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000}
+    .modal {background:#fff;padding:20px;border-radius:12px;max-width:400px;width:90%;text-align:center;transform:scale(0.8);opacity:0;transition:all 0.3s ease-in-out}
+    .modal.show {transform:scale(1);opacity:1}
+    .close-btn {position:absolute;top:15px;right:15px;background:linear-gradient(135deg,#0011aa,#00c2b3);border:none;color:#fff;font-size:18px;border-radius:50%;width:28px;height:28px;cursor:pointer}
+  </style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="brand">EduSwitch</a>
+  <nav>
+    <a href="boek.html">Boek</a>
+    <a href="ebook.html">E-book</a>
+    <a href="diensten.html">Diensten</a>
+    <a href="hulpvraag.html">Hulpvraag</a>
+    <a href="over.html">Over</a>
+    <a href="contact.html">Contact</a>
+    <a href="bestellen.html">Bestellen</a>
+  </nav>
+</header>
 
-If your team is not interested in this tooling, you can remove them with ease!
+<div class="content">
+<h1>Dien uw hulpvraag in</h1><form action='https://formspree.io/f/xrbljyzg' method='POST' data-form-type='hulpvraag'><input type='text' name='name' placeholder='Naam' required><input type='email' name='email' placeholder='E-mail' required><textarea name='message' placeholder='Uw hulpvraag' required></textarea><button type='submit' class='btn'>Verzend hulpvraag</button></form>
+</div>
 
-### Removing Renovate
+<div class="content">
+  <h3>Wat anderen zeggen</h3>
+  <div class="review-slider">
+    <p>“Het boek heeft ons team enorm geholpen bij een vliegende start.” — Jan de Vries, directeur</p>
+    <p>“Praktische tips die meteen toepasbaar zijn.” — Petra Jansen, docent</p>
+    <p>“Geeft echt structuur aan het schooljaar.” — Ahmed El Amrani, directeur</p>
+    <p>“Duidelijke handvatten voor het hele team.” — Lisa van Dijk, docent</p>
+  </div>
+</div>
 
-In order to keep our project up-to-date with dependencies we use a tool called [Renovate](https://github.com/marketplace/renovate). If you’re not interested in this tooling, delete the `renovate.json` file and commit that onto your main branch.
+<footer>
+  <p>&copy; 2025 EduSwitch. Alle rechten voorbehouden.</p>
+</footer>
 
-## Next Steps with this theme
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modal-box">
+    <button class="close-btn" id="close-modal">&times;</button>
+    <p id="modal-message"></p>
+  </div>
+</div>
 
-This project is intended to be extended by you! We wanted to make possible to replace parts of it with your own tools and data sources. If you're interested on a direction, you can refer to Matter's [how to use section](https://gatsby-ecommerce-theme.netlify.app/how-to-use/) in this project or you may want to consider using [Matter's toolset with their JAMM framework](https://matterdesign.com.au/service/headless-commerce-with-jamm/) which includes some projects like:
-- [BigCommerce](https://bigcommerce.zfrcsk.net/c/2429593/854992/2941) for a headless e-commerce solution
-- [Builder](https://www.builder.io) as a CMS for the blog articles or other content creation
-- [Klaviyo](https://www.klaviyo.com/) for any email or SMS marketing automation
+<script>
+  const modalOverlay = document.getElementById('modal');
+  const modalBox = document.getElementById('modal-box');
+  const modalMessage = document.getElementById('modal-message');
+  const closeModal = document.getElementById('close-modal');
+  closeModal.addEventListener('click', ()=> modalOverlay.style.display='none');
+  modalOverlay.addEventListener('click', e => { if(e.target===modalOverlay) modalOverlay.style.display='none'; });
+
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formType = this.getAttribute('data-form-type');
+      let message = "Bedankt voor uw bericht.";
+      if(formType==="hulpvraag") message = "Bedankt voor het insturen van uw hulpvraag. We gaan ermee aan de slag.";
+      if(formType==="bestelling") message = "Bedankt voor uw bestelling. U ontvangt spoedig een bevestiging in uw e-mail.";
+      modalMessage.textContent = message;
+      modalOverlay.style.display = 'flex';
+      setTimeout(()=> modalBox.classList.add('show'), 10);
+    });
+  });
+</script>
+
+</body>
+</html>
+
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home - EduSwitch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {margin:0;font-family:'Inter',sans-serif;background:#f8fcff;color:#081125}
+    header {position:sticky;top:0;background:linear-gradient(90deg,#0011aa,#00c2b3);color:#fff;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
+    header a {color:#fff;margin-left:16px;text-decoration:none;font-weight:600}
+    header .brand {font-family:'Sora',sans-serif;font-weight:800;font-size:22px}
+    .content {max-width:900px;margin:40px auto;padding:0 20px}
+    .btn {display:inline-block;background:linear-gradient(135deg,#0011aa,#00c2b3);color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:700}
+    .trust-badges {display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+    .trust-badge {background:#fff;padding:6px 12px;border-radius:8px;font-size:0.85rem;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+    footer {text-align:center;padding:20px;background:#f1f5f9;margin-top:40px}
+    /* Modal styling */
+    .modal-overlay {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000}
+    .modal {background:#fff;padding:20px;border-radius:12px;max-width:400px;width:90%;text-align:center;transform:scale(0.8);opacity:0;transition:all 0.3s ease-in-out}
+    .modal.show {transform:scale(1);opacity:1}
+    .close-btn {position:absolute;top:15px;right:15px;background:linear-gradient(135deg,#0011aa,#00c2b3);border:none;color:#fff;font-size:18px;border-radius:50%;width:28px;height:28px;cursor:pointer}
+  </style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="brand">EduSwitch</a>
+  <nav>
+    <a href="boek.html">Boek</a>
+    <a href="ebook.html">E-book</a>
+    <a href="diensten.html">Diensten</a>
+    <a href="hulpvraag.html">Hulpvraag</a>
+    <a href="over.html">Over</a>
+    <a href="contact.html">Contact</a>
+    <a href="bestellen.html">Bestellen</a>
+  </nav>
+</header>
+
+<div class="content">
+<h1>Welkom bij EduSwitch</h1><p>EduSwitch helpt scholen en organisaties vooruit met praktische handvatten, boeken en advies op maat.</p>
+</div>
+
+<div class="content">
+  <h3>Wat anderen zeggen</h3>
+  <div class="review-slider">
+    <p>“Het boek heeft ons team enorm geholpen bij een vliegende start.” — Jan de Vries, directeur</p>
+    <p>“Praktische tips die meteen toepasbaar zijn.” — Petra Jansen, docent</p>
+    <p>“Geeft echt structuur aan het schooljaar.” — Ahmed El Amrani, directeur</p>
+    <p>“Duidelijke handvatten voor het hele team.” — Lisa van Dijk, docent</p>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2025 EduSwitch. Alle rechten voorbehouden.</p>
+</footer>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modal-box">
+    <button class="close-btn" id="close-modal">&times;</button>
+    <p id="modal-message"></p>
+  </div>
+</div>
+
+<script>
+  const modalOverlay = document.getElementById('modal');
+  const modalBox = document.getElementById('modal-box');
+  const modalMessage = document.getElementById('modal-message');
+  const closeModal = document.getElementById('close-modal');
+  closeModal.addEventListener('click', ()=> modalOverlay.style.display='none');
+  modalOverlay.addEventListener('click', e => { if(e.target===modalOverlay) modalOverlay.style.display='none'; });
+
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formType = this.getAttribute('data-form-type');
+      let message = "Bedankt voor uw bericht.";
+      if(formType==="hulpvraag") message = "Bedankt voor het insturen van uw hulpvraag. We gaan ermee aan de slag.";
+      if(formType==="bestelling") message = "Bedankt voor uw bestelling. U ontvangt spoedig een bevestiging in uw e-mail.";
+      modalMessage.textContent = message;
+      modalOverlay.style.display = 'flex';
+      setTimeout(()=> modalBox.classList.add('show'), 10);
+    });
+  });
+</script>
+
+</body>
+</html>
+
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Over ons - EduSwitch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {margin:0;font-family:'Inter',sans-serif;background:#f8fcff;color:#081125}
+    header {position:sticky;top:0;background:linear-gradient(90deg,#0011aa,#00c2b3);color:#fff;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
+    header a {color:#fff;margin-left:16px;text-decoration:none;font-weight:600}
+    header .brand {font-family:'Sora',sans-serif;font-weight:800;font-size:22px}
+    .content {max-width:900px;margin:40px auto;padding:0 20px}
+    .btn {display:inline-block;background:linear-gradient(135deg,#0011aa,#00c2b3);color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:700}
+    .trust-badges {display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+    .trust-badge {background:#fff;padding:6px 12px;border-radius:8px;font-size:0.85rem;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+    footer {text-align:center;padding:20px;background:#f1f5f9;margin-top:40px}
+    /* Modal styling */
+    .modal-overlay {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000}
+    .modal {background:#fff;padding:20px;border-radius:12px;max-width:400px;width:90%;text-align:center;transform:scale(0.8);opacity:0;transition:all 0.3s ease-in-out}
+    .modal.show {transform:scale(1);opacity:1}
+    .close-btn {position:absolute;top:15px;right:15px;background:linear-gradient(135deg,#0011aa,#00c2b3);border:none;color:#fff;font-size:18px;border-radius:50%;width:28px;height:28px;cursor:pointer}
+  </style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="brand">EduSwitch</a>
+  <nav>
+    <a href="boek.html">Boek</a>
+    <a href="ebook.html">E-book</a>
+    <a href="diensten.html">Diensten</a>
+    <a href="hulpvraag.html">Hulpvraag</a>
+    <a href="over.html">Over</a>
+    <a href="contact.html">Contact</a>
+    <a href="bestellen.html">Bestellen</a>
+  </nav>
+</header>
+
+<div class="content">
+<h1>Over EduSwitch</h1><p>Wij helpen onderwijsinstellingen en organisaties vooruit door verbeterkansen te signaleren en te realiseren.</p>
+</div>
+
+<div class="content">
+  <h3>Wat anderen zeggen</h3>
+  <div class="review-slider">
+    <p>“Het boek heeft ons team enorm geholpen bij een vliegende start.” — Jan de Vries, directeur</p>
+    <p>“Praktische tips die meteen toepasbaar zijn.” — Petra Jansen, docent</p>
+    <p>“Geeft echt structuur aan het schooljaar.” — Ahmed El Amrani, directeur</p>
+    <p>“Duidelijke handvatten voor het hele team.” — Lisa van Dijk, docent</p>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2025 EduSwitch. Alle rechten voorbehouden.</p>
+</footer>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modal-box">
+    <button class="close-btn" id="close-modal">&times;</button>
+    <p id="modal-message"></p>
+  </div>
+</div>
+
+<script>
+  const modalOverlay = document.getElementById('modal');
+  const modalBox = document.getElementById('modal-box');
+  const modalMessage = document.getElementById('modal-message');
+  const closeModal = document.getElementById('close-modal');
+  closeModal.addEventListener('click', ()=> modalOverlay.style.display='none');
+  modalOverlay.addEventListener('click', e => { if(e.target===modalOverlay) modalOverlay.style.display='none'; });
+
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formType = this.getAttribute('data-form-type');
+      let message = "Bedankt voor uw bericht.";
+      if(formType==="hulpvraag") message = "Bedankt voor het insturen van uw hulpvraag. We gaan ermee aan de slag.";
+      if(formType==="bestelling") message = "Bedankt voor uw bestelling. U ontvangt spoedig een bevestiging in uw e-mail.";
+      modalMessage.textContent = message;
+      modalOverlay.style.display = 'flex';
+      setTimeout(()=> modalBox.classList.add('show'), 10);
+    });
+  });
+</script>
+
+</body>
+</html>
